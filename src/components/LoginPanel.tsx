@@ -32,13 +32,13 @@ export function LoginPanel() {
         </p>
 
         {status === "authenticated" ? (
-          <Link className="button button--primary button--full" href="/">
-            Voltar para loja
+          <Link className="button button--primary button--full" href="/dashboard">
+            Acessar área do cliente
           </Link>
         ) : googleProvider ? (
           <button
             className="google-button"
-            onClick={() => signIn("google", { callbackUrl: "/" })}
+            onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
           >
             <span>G</span>
             Continuar com Google

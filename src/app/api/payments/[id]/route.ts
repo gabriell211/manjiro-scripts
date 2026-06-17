@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getMercadoPagoPaymentClient } from "@/lib/mercadopago";
+import prisma from "@/lib/prisma";
 
 export async function GET(
   _request: NextRequest,
@@ -14,6 +15,22 @@ export async function GET(
   try {
     const payment = getMercadoPagoPaymentClient();
     const response = await payment.get({ id });
+
+    await prisma.purchase.upsert({
+      where: { mercadoPagoId: id },
+      update: {
+        status: response.status || "pending",
+        approvedAt: response.date_approved ? new Date(response.date_approved) : null
+      },
+      create: {
+        mercadoPagoId: id,
+        status: response.status || "pending",
+        amount: response.transaction_amount || 0,
+        items: [],
+        userId: null,
+        approvedAt: response.date_approved ? new Date(response.date_approved) : null
+      }
+    });
 
     return NextResponse.json({
       id: response.id,

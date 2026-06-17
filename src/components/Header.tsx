@@ -31,17 +31,22 @@ export function Header() {
 
       <div className="header-actions">
         {status === "authenticated" ? (
-          <button className="profile-pill" onClick={() => signOut()} title="Sair da conta">
-            {session.user?.image ? (
-              <span
-                className="profile-avatar"
-                style={{ backgroundImage: `url(${session.user.image})` }}
-              />
-            ) : (
-              <UserRound size={18} />
-            )}
-            <span>{session.user?.name?.split(" ")[0] ?? "Conta"}</span>
-          </button>
+          <>
+            <Link className="button button--ghost" href="/dashboard">
+              Minha Área
+            </Link>
+            <button className="profile-pill" onClick={() => signOut()} title="Sair da conta">
+              {session.user?.image ? (
+                <span
+                  className="profile-avatar"
+                  style={{ backgroundImage: `url(${session.user.image})` }}
+                />
+              ) : (
+                <UserRound size={18} />
+              )}
+              <span>{session.user?.name?.split(" ")[0] ?? "Conta"}</span>
+            </button>
+          </>
         ) : (
           <Link className="button button--ghost" href="/login">
             Entrar com Google

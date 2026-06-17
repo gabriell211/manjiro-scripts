@@ -20,6 +20,12 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# prisma generated
+src/generated
+
+# TypeScript
+tsconfig.tsbuildinfo
+
 # misc
 .DS_Store
 Thumbs.db

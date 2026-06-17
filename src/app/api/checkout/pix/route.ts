@@ -3,6 +3,9 @@ import { z } from "zod";
 import { catalogItems, getCatalogItem } from "@/lib/catalog";
 import { consultingPackages, getConsultingPackage } from "@/lib/consulting";
 import { getMercadoPagoPaymentClient } from "@/lib/mercadopago";
+import prisma from "@/lib/prisma";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 
 const checkoutSchema = z.object({
   payer: z.object({
@@ -64,6 +67,18 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    const session = await getServerSession(authOptions);
+    let userId = null;
+    
+    if (session?.user?.email) {
+      const user = await prisma.user.findUnique({
+        where: { email: session.user.email }
+      });
+      if (user) {
+        userId = user.id;
+      }
+    }
+
     const payment = getMercadoPagoPaymentClient();
     const [firstName, ...lastNameParts] = parsed.data.payer.name.trim().split(/\s+/);
 
@@ -87,6 +102,17 @@ export async function POST(request: NextRequest) {
             unit_price: item.unitPrice
           }))
         }
+      }
+    });
+
+    await prisma.purchase.create({
+      data: {
+        mercadoPagoId: String(response.id),
+        status: response.status || "pending",
+        amount: transactionAmount,
+        items: resolvedItems,
+        userId: userId,
+        approvedAt: response.date_approved ? new Date(response.date_approved) : null
       }
     });
 
