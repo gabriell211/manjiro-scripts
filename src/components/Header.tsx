@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
 import { Menu, ShoppingCart, UserRound } from "lucide-react";
 import { useCart } from "@/components/CartProvider";
@@ -12,7 +13,9 @@ export function Header() {
   return (
     <header className="site-header">
       <Link className="brand" href="/">
-        <span className="brand-mark">卍</span>
+        <div className="brand-mark" style={{ padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Image src="/logo.png" alt="Manjiro Scripts" width={42} height={42} style={{ borderRadius: 14 }} />
+        </div>
         <span>
           <strong>Manjiro Scripts</strong>
           <small>FiveM premium store</small>
